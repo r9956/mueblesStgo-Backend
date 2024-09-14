@@ -4,15 +4,16 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.sql.Date;
 import java.sql.Time;
 
 @Entity
-@Table(name = "extraHours")
+@Table(name = "discount")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class ExtraHoursEntity {
+@NoArgsConstructor
+public class DiscountEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
@@ -20,9 +21,8 @@ public class ExtraHoursEntity {
     private String rut;
     private Date date;
     private Time time;
-    private int numExtraHours;
-    private int numExtraMin;
-    private int numExtraSec;
-    private int extraHoursPayment;
-    private boolean authorized;
+    private String motive;
+    private long minutes;
+    private double percentage;
+    private boolean applied;
 }

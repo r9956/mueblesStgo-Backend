@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -23,6 +25,12 @@ public class ClockDataService {
 
     @Autowired
     private EmployeeService employeeService;
+
+    @Autowired
+    private ExtraHoursService extraHoursService;
+
+    @Autowired
+    private DiscountService discountService;
 
     public boolean fileTypeValidation(MultipartFile file) {
         String fileName = Objects.requireNonNull(file.getOriginalFilename());
@@ -140,5 +148,71 @@ public class ClockDataService {
         clockData.setRut(rut);
         clockDataRepository.save(clockData);
     }
+
+    public void analyzeClockData(){
+        List<ClockDataEntity> clockData = clockDataRepository.findAll();
+
+        // Cada entrada debe marcar si fue procesada o no
+
+        for (ClockDataEntity cd : clockData) {
+            String rut = cd.getRut();
+            Date date = cd.getDate();
+            Time time = cd.getTime();
+            System.out.println(cd); // DELETE
+            // Check if the employee is late
+            if (checkLateArrival(time)) {
+                System.out.println("atraso"); // DELETE
+                // How many minutes is the employee late
+                long minutes = calculateLateMinutes(time.toLocalTime());
+                System.out.println("minutes: " + minutes);
+                // Discount calculation
+                if (minutes > 10) {
+                    System.out.println("calcula atraso"); // DELETE
+                    discountService.calculateDiscount(rut, date, time, minutes);
+                }
+            }
+
+            // Check for extra hours
+            if (checkExtraHours(time)) {
+                System.out.println("hora extra"); // DELETE
+                // How many minutes after exit time
+                long extraHoursMinutes = calculateExtraMinutes(time.toLocalTime());
+
+                // Extra hours payment calculation
+                extraHoursService.calculateExtraHours(rut, date, time, extraHoursMinutes);
+            }
+        }
+
+    }
+
+    private boolean checkExtraHours(Time exit) {
+        LocalTime exitTime = LocalTime.of(18, 0, 0);
+        LocalTime realExitTime = exit.toLocalTime();
+        return realExitTime.isAfter(exitTime);
+    }
+
+    public boolean checkLateArrival(Time arrival) {
+        LocalTime entryTime = LocalTime.of(8, 0, 0);
+        LocalTime exitTime = LocalTime.of(18, 0, 0);
+        LocalTime arrivalTime = arrival.toLocalTime();
+        return arrivalTime.isAfter(entryTime) && arrivalTime.isBefore(exitTime);
+    }
+
+    public long calculateLateMinutes(LocalTime arrivalTime) {
+        LocalTime entryTime = LocalTime.of(8, 0, 0);
+        if (arrivalTime.isAfter(entryTime)) {
+            return java.time.Duration.between(entryTime, arrivalTime).toMinutes();
+        }
+        return 0;
+    }
+
+    public long calculateExtraMinutes(LocalTime exitTime) {
+        LocalTime endTime = LocalTime.of(18, 0, 0);
+        if (exitTime.isAfter(endTime)) {
+            return java.time.Duration.between(endTime, exitTime).toMinutes();
+        }
+        return 0;
+    }
+
 
 }

@@ -18,6 +18,10 @@ public class EmployeeService {
         return employeeRepository.findByRut(rut) != null;
     }
 
+    public EmployeeEntity findByRut(String rut) {
+        return employeeRepository.findByRut(rut);
+    }
+
     public boolean rutFormatValidation(String rut) {
         if (rut.length() < 11 || rut.length() > 12) {
             return false;
@@ -45,14 +49,12 @@ public class EmployeeService {
 
         for (int i = 0; i < length; i++) {
             char c = rut.charAt(i);
-            if (c != '-' && c != '.' && !Character.isDigit(c)) {
+            if (c != '-' && c != '.' && !Character.isDigit(c) && c != 'k') {
                 return false;
             }
         }
 
-        char lastChar = rut.charAt(length - 1);
-
-        return Character.isLetter(lastChar) || Character.isDigit(lastChar);
+        return true;
     }
 
     public ResponseEntity<String> addEmployee(EmployeeEntity employee) {

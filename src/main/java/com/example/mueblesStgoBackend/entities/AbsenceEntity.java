@@ -19,5 +19,6 @@ public class AbsenceEntity {
     private Long id;
     private String rut;
     private Date date;
+    private long minutes;
     private boolean excused;
 }

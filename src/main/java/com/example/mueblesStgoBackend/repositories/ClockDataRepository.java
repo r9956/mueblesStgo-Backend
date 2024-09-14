@@ -11,12 +11,6 @@ import java.sql.Time;
 
 @Repository
 public interface ClockDataRepository extends JpaRepository<ClockDataEntity, Long> {
-    @Query(value = "INSERT INTO clock_data (date, time, rut) VALUES (:date, :time, :rut)", nativeQuery = true)
-    void clockEnterData(
-            @Param("date") Date date,
-            @Param("time") Time time,
-            @Param("rut") String rut);
-
     @Query(value = "SELECT * FROM clock_data WHERE date = :date AND time = :time AND rut = :rut", nativeQuery = true)
     ClockDataEntity findEntry(
             @Param("date") Date date,

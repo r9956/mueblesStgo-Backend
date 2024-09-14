@@ -22,8 +22,12 @@ public class ClockDataController {
         try {
             return clockDataService.fileReader(file);
         } catch (Exception e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing file");
         }
+    }
+
+    @PostMapping("/analyze")
+    public void analyzeClockData() {
+        clockDataService.analyzeClockData();
     }
 }
