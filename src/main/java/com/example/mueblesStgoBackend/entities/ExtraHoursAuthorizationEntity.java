@@ -1,24 +1,22 @@
-package com.example.mueblesStgo_backend.entities;
+package com.example.mueblesStgoBackend.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+
 @Entity
-@Table(name = "paychecks")
+@Table(name = "extraHoursAuthorization")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class PaycheckEntity {
+@NoArgsConstructor
+public class ExtraHoursAuthorizationEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long id;
     private String rut;
-    private int year;
-    private int month;
-    private int monthlySalary;
-    private int extraHourBonus;
-    private int totalSalary;
+    private Date date;
 }

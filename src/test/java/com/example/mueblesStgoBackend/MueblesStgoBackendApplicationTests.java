@@ -1,4 +1,4 @@
-package com.example.mueblesStgo_backend;
+package com.example.mueblesStgoBackend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

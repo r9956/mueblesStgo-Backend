@@ -1,4 +1,4 @@
-package com.example.mueblesStgo_backend.entities;
+package com.example.mueblesStgoBackend.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

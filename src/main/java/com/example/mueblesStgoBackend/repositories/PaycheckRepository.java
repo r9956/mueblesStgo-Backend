@@ -1,6 +1,6 @@
-package com.example.mueblesStgo_backend.repositories;
+package com.example.mueblesStgoBackend.repositories;
 
-import com.example.mueblesStgo_backend.entities.PaycheckEntity;
+import com.example.mueblesStgoBackend.entities.PaycheckEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

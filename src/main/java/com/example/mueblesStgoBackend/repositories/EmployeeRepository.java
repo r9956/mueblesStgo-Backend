@@ -1,6 +1,6 @@
-package com.example.mueblesStgo_backend.repositories;
+package com.example.mueblesStgoBackend.repositories;
 
-import com.example.mueblesStgo_backend.entities.EmployeeEntity;
+import com.example.mueblesStgoBackend.entities.EmployeeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

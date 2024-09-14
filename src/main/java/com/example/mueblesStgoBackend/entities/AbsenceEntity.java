@@ -1,4 +1,4 @@
-package com.example.mueblesStgo_backend.entities;
+package com.example.mueblesStgoBackend.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,19 +8,16 @@ import lombok.NoArgsConstructor;
 import java.sql.Date;
 
 @Entity
-@Table(name = "employees")
+@Table(name = "abcense")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class EmployeeEntity {
+@NoArgsConstructor
+public class AbsenceEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Long id;
     private String rut;
-    private String names;
-    private String lastNames;
-    private Date birthDate;
-    private String category;
-    private Date startDate;
+    private Date date;
+    private boolean excused;
 }

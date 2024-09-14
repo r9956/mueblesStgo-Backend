@@ -1,6 +1,6 @@
-package com.example.mueblesStgo_backend.repositories;
+package com.example.mueblesStgoBackend.repositories;
 
-import com.example.mueblesStgo_backend.entities.ExtraHoursEntity;
+import com.example.mueblesStgoBackend.entities.ExtraHoursEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
