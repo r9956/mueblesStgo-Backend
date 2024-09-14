@@ -7,7 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EntryTimeRepository extends JpaRepository<EntryTimeEntity, Long> {
-
-    @Procedure("LoadTimeEntries")
-    void loadClock(String filePath);
 }

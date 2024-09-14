@@ -120,16 +120,15 @@ public class ClockDataService {
 
             String formattedDuration = String.format("%.3f", durationSeconds).replace(",", "."); // Replace , for .
 
-            String message = String.format("File processed successfully.\n" +
-                            "%d entries added, %d entries skipped due to data format errors, " +
-                            "and %d duplicate entries avoided.\n" +
-                            "Processing time: %s seconds",
+            String message = String.format("""
+                            File processed successfully.
+                            %d entries added, %d entries skipped due to data format errors, and %d duplicate entries avoided.
+                            Processing time: %s seconds""",
                     entriesAdded, entriesSkipped, duplicatesAvoided, formattedDuration);
 
             return ResponseEntity.status(HttpStatus.OK).body(message);
 
         } catch (IOException e) {
-            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error reading the file.");
         }
     }

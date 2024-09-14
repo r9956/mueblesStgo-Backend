@@ -52,11 +52,7 @@ public class EmployeeService {
 
         char lastChar = rut.charAt(length - 1);
 
-        if (!Character.isLetter(lastChar) && !Character.isDigit(lastChar)) {
-            return false;
-        }
-
-        return true;
+        return Character.isLetter(lastChar) || Character.isDigit(lastChar);
     }
 
     public ResponseEntity<String> addEmployee(EmployeeEntity employee) {
