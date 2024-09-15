@@ -11,7 +11,7 @@ import java.sql.Date;
 @Repository
 public interface AbsenceExcuseRepository extends JpaRepository<AbsenceExcuseEntity, Long> {
 
-    @Query(value="SELECT * FROM abcense_excuse WHERE rut = :rut AND from_date = :fromDate AND to_date = :toDate", nativeQuery = true)
+    @Query(value="SELECT * FROM absence_excuse WHERE rut = :rut AND from_date = :fromDate AND to_date = :toDate", nativeQuery = true)
     AbsenceExcuseEntity findAbsenceExcuse(
             @Param("rut") String rut,
             @Param("fromDate") Date fromDate,

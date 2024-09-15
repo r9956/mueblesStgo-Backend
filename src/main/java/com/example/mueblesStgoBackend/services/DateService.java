@@ -19,5 +19,4 @@ public class DateService {
     public boolean isDateRangeValid(Date fromDate, Date toDate) {
         return calculateDaysBetween(fromDate, toDate) >= 0;
     }
-
 }

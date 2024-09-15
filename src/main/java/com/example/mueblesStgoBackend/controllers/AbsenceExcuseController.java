@@ -28,7 +28,6 @@ public class AbsenceExcuseController {
             @RequestParam("fromDate") Date fromDate,
             @RequestParam("toDate") Date toDate,
             @RequestParam("file") MultipartFile file) {
-        //System.out.println(dateService.calculateDaysBetween(fromDate, toDate));
         return absenceExcuseService.addExcuse(rut, fromDate, toDate, file);
     }
 }

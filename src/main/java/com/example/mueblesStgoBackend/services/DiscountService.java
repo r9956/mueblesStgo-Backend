@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.util.List;
 
 @Service
 public class DiscountService {
@@ -22,7 +23,6 @@ public class DiscountService {
         discount.setRut(rut);
         discount.setDate(date);
         discount.setTime(time);
-        discount.setMotive("Atraso");
         discount.setMinutes(minutes);
         discount.setPercentage(discountPercentage);
         discount.setApplied(false);
@@ -56,5 +56,20 @@ public class DiscountService {
             absenceService.createAbsence(rut, date, minutes);
             System.out.println("Inasistencia creada");
         }
+    }
+
+    public int calculateTotalDiscount(String rut, int year, int month, int baseSalary) {
+        List<DiscountEntity> discounts = discountRepository.filterByRutYearAndMonth(rut, year, month);
+        int totalDiscount = 0;
+
+        // Late Arrival discounts
+        for (DiscountEntity d : discounts) {
+            totalDiscount = (int) Math.floor(totalDiscount + (baseSalary * d.getPercentage()));
+        }
+
+        // Unexcused absence discounts
+        int totalAbsencesDiscount = absenceService.calculateUnexcusedAbsence(rut, year, month, baseSalary);
+
+        return totalDiscount + totalAbsencesDiscount;
     }
 }

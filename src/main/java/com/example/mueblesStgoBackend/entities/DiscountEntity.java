@@ -21,7 +21,6 @@ public class DiscountEntity {
     private String rut;
     private Date date;
     private Time time;
-    private String motive;
     private long minutes;
     private double percentage;
     private boolean applied;

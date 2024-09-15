@@ -25,4 +25,5 @@ public class ExtraHoursEntity {
     private int numExtraSec;
     private int extraHoursPayment;
     private boolean authorized;
+    private boolean paid;
 }

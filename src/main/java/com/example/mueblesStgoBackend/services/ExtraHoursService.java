@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.util.List;
 
 @Service
 public class ExtraHoursService {
@@ -35,6 +36,9 @@ public class ExtraHoursService {
         createExtraHours(rut, date, time, extraHours, remainingMinutes, extraHoursPayment);
     }
 
+    public int calculateMonthlyExtraHoursPayment(String rut, int year, int month) {
+        return extraHoursRepository.extraHoursPayment(rut, year, month);
+    }
 
     private void createExtraHours(String rut, Date date, Time time, int numHours, int numMinutes, int extraHoursPayment) {
         ExtraHoursEntity extraHours = new ExtraHoursEntity();
@@ -46,6 +50,7 @@ public class ExtraHoursService {
         extraHours.setNumExtraSec(0);
         extraHours.setExtraHoursPayment(extraHoursPayment);
         extraHours.setAuthorized(false);
+        extraHours.setPaid(false);
         extraHoursRepository.save(extraHours);
     }
 }

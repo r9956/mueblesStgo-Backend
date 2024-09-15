@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.sql.Date;
 
 @Entity
-@Table(name = "abcense")
+@Table(name = "absence")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,4 +21,5 @@ public class AbsenceEntity {
     private Date date;
     private long minutes;
     private boolean excused;
+    private boolean discount_applied;
 }

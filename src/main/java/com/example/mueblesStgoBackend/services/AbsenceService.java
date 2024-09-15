@@ -1,10 +1,12 @@
 package com.example.mueblesStgoBackend.services;
 
 import com.example.mueblesStgoBackend.entities.AbsenceEntity;
+import com.example.mueblesStgoBackend.entities.DiscountEntity;
 import com.example.mueblesStgoBackend.repositories.AbsenceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.sql.Date;
+import java.util.List;
 
 @Service
 public class AbsenceService {
@@ -20,4 +22,21 @@ public class AbsenceService {
         absence.setExcused(false);
         absenceRepository.save(absence);
     }
+
+    public AbsenceEntity findAbsenceByRutAndDate(String rut, Date date) {
+        return absenceRepository.findAbsence(rut, date);
+    }
+
+    public int calculateUnexcusedAbsence(String rut, int year, int month, int baseSalary) {
+        List<AbsenceEntity> absences = absenceRepository.filterByRutYearAndMonth(rut, year, month);
+        int totalDiscount = 0;
+
+        // Unexcused absence discounts
+        for (AbsenceEntity a : absences) {
+            totalDiscount = (int) Math.floor(totalDiscount + (baseSalary * 0.15));
+        }
+
+        return totalDiscount;
+    }
+
 }

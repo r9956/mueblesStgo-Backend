@@ -16,9 +16,17 @@ public class PaycheckEntity {
     @Column(unique = true, nullable = false)
     private Long id;
     private String rut;
+    private String name;
+    private String category;
     private int year;
     private int month;
-    private int monthlySalary;
-    private int extraHourBonus;
+    private int serviceYears;
+    private int monthlyBaseSalary;
+    private int extraHoursBonus;
+    private int serviceBonus;
+    private int discounts;
+    private int grossSalary;
+    private int retirementDeduction;
+    private int healthDeduction;
     private int totalSalary;
 }
