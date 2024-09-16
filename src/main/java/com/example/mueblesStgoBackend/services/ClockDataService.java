@@ -15,11 +15,9 @@ import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class ClockDataService {
-
     @Autowired
     private ClockDataRepository clockDataRepository;
 
@@ -33,32 +31,37 @@ public class ClockDataService {
     private DiscountService discountService;
 
     public boolean fileTypeValidation(MultipartFile file) {
-        String fileName = Objects.requireNonNull(file.getOriginalFilename());
+        if (file == null || file.getOriginalFilename() == null) {
+            return false;
+        }
+        String fileName = file.getOriginalFilename();
         return fileName.toLowerCase().endsWith(".txt");
     }
 
     public boolean fileDataFormatValidation(String[] stringArray) {
+        if (stringArray == null) {
+            return false;
+        }
         return stringArray.length == 3;
     }
 
     public boolean dateFormatValidation(String date) {
-        if (date.contains("/")) {
+        // Regular expression for date formatted as "YYYY-MM-DD"
+        String dateRegex = "^[0-9]{4}/[0-9]{2}/[0-9]{2}$";
+
+        if (date.matches(dateRegex)) {
             String[] dateString = date.split("/");
-            if (dateString.length == 3) {
-                return dateString[0].length() == 4 && dateString[1].length() == 2 && dateString[2].length() == 2;
-            }
+            int month = Integer.parseInt(dateString[1]);
+            int day = Integer.parseInt(dateString[2]);
+            return month >= 1 && month <= 12 && day >= 1 && day <= 31;
         }
         return false;
     }
 
     public boolean timeFormatValidation(String time) {
-        if (time.contains(":")) {
-            String[] timeString = time.split(":");
-            if (timeString.length == 2) {
-                return timeString[0].length() == 2 && timeString[1].length() == 2;
-            }
-        }
-        return false;
+        // Regular expression for time formatted as "MM:HH"
+        String timeRegex = "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$";
+        return time != null && time.matches(timeRegex);
     }
 
     public boolean doesEntryExist(Date date, Time time, String rut) {

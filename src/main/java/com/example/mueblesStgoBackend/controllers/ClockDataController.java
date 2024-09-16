@@ -17,12 +17,12 @@ public class ClockDataController {
     @PostMapping("/clock")
     public ResponseEntity<String> readClockData(@RequestParam("file") MultipartFile file) {
         if (file.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("File is empty.");
         }
         try {
             return clockDataService.fileReader(file);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing file");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error processing file.");
         }
     }
 
