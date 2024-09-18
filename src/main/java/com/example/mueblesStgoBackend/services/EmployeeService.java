@@ -7,6 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 import static org.springframework.http.ResponseEntity.status;
 
 @Service
@@ -71,4 +74,21 @@ public class EmployeeService {
     }
 
 
+    public List<EmployeeEntity> getAll() {
+        return employeeRepository.findAll();
+    }
+
+    public Optional<EmployeeEntity> getById(Long id) {
+        return employeeRepository.findById(id);
+    }
+
+    public ResponseEntity<String> delete(Long id) {
+        if (getById(id).isPresent()) {
+            employeeRepository.deleteById(id);
+            return ResponseEntity.status(HttpStatus.OK).body("Employee deleted successfully.");
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There's no employee registered with id " + id + ".");
+        }
+    }
 }
