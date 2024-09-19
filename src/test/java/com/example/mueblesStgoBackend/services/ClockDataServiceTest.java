@@ -208,11 +208,6 @@ public class ClockDataServiceTest {
 
     /**
      * Tests for doesEntryExist
-     *
-     *     public boolean doesEntryExist(Date date, Time time, String rut) {
-     *         return clockDataRepository.findEntry(date, time, rut) != null;
-     *     }
-     *
      **/
 
 //    @Test
