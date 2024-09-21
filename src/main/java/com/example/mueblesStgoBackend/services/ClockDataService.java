@@ -125,23 +125,116 @@ public class ClockDataService {
                 entriesAdded++;
             }
 
-            long endTime = System.currentTimeMillis(); // End timing
-            long durationMilli = endTime - startTime; // Calculate duration
-            double durationSeconds = durationMilli / 1000.0; // Milli -> Seconds
+            long endTime = System.currentTimeMillis();
+            long durationMilli = endTime - startTime;
+            double durationSeconds = durationMilli / 1000.0;
 
-            String formattedDuration = String.format("%.3f", durationSeconds).replace(",", "."); // Replace , for .
+            String formattedDuration = String.format("%.3f", durationSeconds).replace(",", "."); // Reemplaza , por .
 
-            String message = String.format("""
-                            File processed successfully.
-                            %d entries added, %d entries skipped due to data format errors, and %d duplicate entries avoided.
-                            Processing time: %s seconds""",
-                    entriesAdded, entriesSkipped, duplicatesAvoided, formattedDuration);
-
-            return ResponseEntity.status(HttpStatus.OK).body(message);
+            return ResponseEntity.status(HttpStatus.OK).body(
+                    formateClockDataMessage(entriesAdded, entriesSkipped, duplicatesAvoided, formattedDuration));
 
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error reading the file.");
         }
+    }
+
+    private String formateClockDataMessage(int entriesAdded, int entriesSkipped, int duplicatesAvoided, String formattedDuration) {
+        String message = "";
+
+        // CASO EXITOSO
+        if (entriesAdded != 0 && entriesSkipped == 0 && duplicatesAvoided == 0) {
+            message = String.format("""
+                            RESULTADO: %d entradas añadidas.
+                            
+                            Tiempo de procesamiento: %s segundos""",
+                    entriesAdded, formattedDuration);
+        }
+
+        // ERROR: ARCHIVO VACÍO O CON ERRORES
+        if (entriesAdded == 0 && entriesSkipped == 0 && duplicatesAvoided == 0) {
+            message = String.format("""
+                            ERROR: El archivo no contiene información válida.
+                            
+                            Tiempo de procesamiento: %s segundos""",
+                    formattedDuration);
+        }
+
+        // ERROR: ENTRADAS EVITADAS POR ERRORES DE FORMATO
+        if (entriesAdded == 0 && entriesSkipped != 0 && duplicatesAvoided == 0) {
+            message = String.format("""
+                            ERROR: El archivo no contiene información válida.
+                            
+                            Tiempo de procesamiento: %s segundos""",
+                    formattedDuration);
+        }
+
+        // ADVERTENCIA: ENTRADAS CREADAS Y ENTRADAS EVITADAS
+        if (entriesAdded != 0 && entriesSkipped != 0 && duplicatesAvoided == 0) {
+            message = String.format("""
+                            ADVERTENCIA: El archivo fue procesado por el sistema pero presentó errores.
+                            
+                            RESULTADOS:
+                            %d entradas añadidas correctamente.
+                            %d entradas sin añadir debido a errores de formato.
+                            
+                            Tiempo de procesamiento: %s segundos""",
+                    entriesAdded, entriesSkipped, formattedDuration);
+        }
+
+        // ADVERTENCIA: ENTRADAS DUPLICADAS
+        if (entriesAdded == 0 && entriesSkipped == 0 && duplicatesAvoided != 0) {
+            message = String.format("""
+                            ADVERTENCIA: La información contenida en el archivo ya existe en el sistema.
+                            
+                            %d entradas fueron añadidas.
+                            %d entradas ya existían en la base de datos y no fueron añadidas para evitar duplicación.
+                            
+                            Tiempo de procesamiento: %s segundos""",
+                    entriesAdded, duplicatesAvoided, formattedDuration);
+        }
+
+        // ADVERTENCIA: ENTRADAS EVITADAS Y DUPLICADAS
+        if (entriesAdded == 0 && entriesSkipped != 0 && duplicatesAvoided != 0) {
+            message = String.format("""
+                            ADVERTENCIA: El archivo fue procesado por el sistema pero presentó errores.
+                            
+                            RESULTADOS:
+                            %d entradas sin añadir debido a errores de formato.
+                            %d entradas ya existían en la base de datos y no fueron añadidas para evitar duplicación.
+                            
+                            Tiempo de procesamiento: %s segundos""",
+                    entriesSkipped, duplicatesAvoided, formattedDuration);
+        }
+
+        // ADVERTENCIA: ENTRADAS EVITADAS Y DUPLICADAS
+        if (entriesAdded != 0 && entriesSkipped == 0 && duplicatesAvoided != 0) {
+            message = String.format("""
+                            ADVERTENCIA: El archivo fue procesado por el sistema correctamente pero presentó información duplicada.
+                            
+                            RESULTADOS:
+                            %d entradas fueron añadidas.
+                            %d entradas ya existían en la base de datos y no fueron añadidas para evitar duplicación.
+                            
+                            Tiempo de procesamiento: %s segundos""",
+                    entriesAdded, duplicatesAvoided, formattedDuration);
+        }
+
+        // ADVERTENCIA: ENTRADAS CREADAS, EVITADAS Y DUPLICADAS
+        if (entriesAdded != 0 && entriesSkipped != 0 && duplicatesAvoided != 0) {
+            message = String.format("""
+                            ADVERTENCIA: El archivo fue procesado por el sistema pero presentó errores.
+                            
+                            RESULTADOS:
+                            %d entradas añadidas correctamente.
+                            %d entradas sin añadir debido a errores de formato.
+                            %d entradas ya existían en la base de datos y no fueron añadidas para evitar duplicación.
+                            
+                            Tiempo de procesamiento: %s segundos""",
+                    entriesAdded, entriesSkipped, duplicatesAvoided, formattedDuration);
+        }
+
+        return message;
     }
 
     private void saveClockData(Date date, Time time, String rut) {
