@@ -4,12 +4,13 @@ import com.example.mueblesStgoBackend.entities.ExtraHoursAuthorizationEntity;
 import com.example.mueblesStgoBackend.services.ExtraHoursAuthorizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.sql.Date;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("/auth")
 public class ExtraHoursAuthorizationController {
 
@@ -17,7 +18,12 @@ public class ExtraHoursAuthorizationController {
     ExtraHoursAuthorizationService extraHoursAuthorizationService;
 
     @PostMapping("/add")
-    public ResponseEntity<String> addAuthorization(@RequestBody ExtraHoursAuthorizationEntity auth) {
+    public ResponseEntity<String> addAuthorization(@RequestParam String rut,
+                                                   @RequestParam Date date,
+                                                   @RequestParam MultipartFile file) {
+        ExtraHoursAuthorizationEntity auth = new ExtraHoursAuthorizationEntity();
+        auth.setRut(rut);
+        auth.setDate(date);
         return extraHoursAuthorizationService.addAuthorization(auth);
     }
 

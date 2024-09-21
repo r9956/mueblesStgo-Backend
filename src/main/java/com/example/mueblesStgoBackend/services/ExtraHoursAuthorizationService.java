@@ -21,11 +21,11 @@ public class ExtraHoursAuthorizationService {
 
     public ResponseEntity<String> addAuthorization(ExtraHoursAuthorizationEntity auth) {
         if (findAuthorization(auth.getRut(), auth.getDate()) != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflict: An authorization for this person and date has already been submitted.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Conflicto: Una autorización para esta persona y fecha ya ha sido ingresada");
         }
         else {
             extraHoursAuthorizationRepository.save(auth);
-            return ResponseEntity.ok("Authorization submitted successfully.");
+            return ResponseEntity.ok("Autorización ingresada correctamente.");
         }
     }
 }
