@@ -68,18 +68,18 @@ public class AbsenceExcuseService {
 
     public ResponseEntity<String> addExcuse(String rut, Date fromDate, Date toDate, MultipartFile file) {
         if (doesAbsenceExcuseExists(rut, fromDate, toDate)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: An excuse for this employee's absence has already been registered.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Una justificación para este empleado y fecha ya ha sido ingresada previamente.");
         }
         if (employeeService.rutFormatValidation(rut)) {
             if (employeeService.doesRutExists(rut)) {
                 if (validateAbsenceDates(fromDate, toDate)) {
                     saveAbsenceExcuse(rut, fromDate, toDate, file);
-                    return ResponseEntity.status(HttpStatus.OK).body("Absence excuse processed successfully.");
+                    return ResponseEntity.status(HttpStatus.OK).body("Justificación de ausencia ingresada correctamente.");
                 }
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: The range between dates is not valid.");
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: El rango de fechas no es válido.");
             }
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: There is not a registered employee with rut: " + rut + ".");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: No hay un empleado registrado con el RUT: " + rut + ".");
         }
-        return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: Rut " + rut + " is not valid.");
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: El rut " + rut + " no es válido.");
     }
 }

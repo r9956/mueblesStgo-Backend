@@ -4,16 +4,14 @@ import com.example.mueblesStgoBackend.services.AbsenceExcuseService;
 import com.example.mueblesStgoBackend.services.DateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
 
 @RestController
 @RequestMapping("/excuse")
+@CrossOrigin("*")
 public class AbsenceExcuseController {
 
     @Autowired
