@@ -91,4 +91,25 @@ public class EmployeeService {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There's no employee registered with id " + id + ".");
         }
     }
+
+    public ResponseEntity<String> updateEmployee(Long id, EmployeeEntity updatedEmployee) {
+        Optional<EmployeeEntity> existingEmployeeOpt = employeeRepository.findById(id);
+
+        if (existingEmployeeOpt.isPresent()) {
+            EmployeeEntity existingEmployee = existingEmployeeOpt.get();
+
+            existingEmployee.setRut(updatedEmployee.getRut());
+            existingEmployee.setNames(updatedEmployee.getNames());
+            existingEmployee.setLastNames(updatedEmployee.getLastNames());
+            existingEmployee.setBirthDate(updatedEmployee.getBirthDate());
+            existingEmployee.setCategory(updatedEmployee.getCategory());
+            existingEmployee.setStartDate(updatedEmployee.getStartDate());
+
+            employeeRepository.save(existingEmployee);
+            return ResponseEntity.ok("Empleado creado correctamente");
+        } else {
+            return ResponseEntity.status(404).body("No se pudo encontrar el empleado.");
+        }
+    }
+
 }
