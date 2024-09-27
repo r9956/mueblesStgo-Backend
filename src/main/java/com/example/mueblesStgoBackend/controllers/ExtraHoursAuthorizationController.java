@@ -10,8 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.sql.Date;
 
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/auth")
+@CrossOrigin("*")
 public class ExtraHoursAuthorizationController {
 
     @Autowired

@@ -46,7 +46,6 @@ public class ClockDataService {
     }
 
     public boolean dateFormatValidation(String date) {
-        // Regular expression for date formatted as "YYYY-MM-DD"
         String dateRegex = "^[0-9]{4}/[0-9]{2}/[0-9]{2}$";
 
         if (date.matches(dateRegex)) {
@@ -59,7 +58,6 @@ public class ClockDataService {
     }
 
     public boolean timeFormatValidation(String time) {
-        // Regular expression for time formatted as "MM:HH"
         String timeRegex = "^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$";
         return time != null && time.matches(timeRegex);
     }

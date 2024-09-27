@@ -3,13 +3,11 @@ package com.example.mueblesStgoBackend.controllers;
 import com.example.mueblesStgoBackend.entities.PaycheckEntity;
 import com.example.mueblesStgoBackend.services.PaycheckService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/paycheck")
+@CrossOrigin("*")
 public class PaycheckController {
 
     @Autowired
