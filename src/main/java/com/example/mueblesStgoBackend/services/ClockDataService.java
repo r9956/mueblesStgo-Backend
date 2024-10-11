@@ -87,25 +87,22 @@ public class ClockDataService {
                 String[] lineToString = line.split(";");
 
                 if (!fileDataFormatValidation(lineToString)) {
-                    System.out.println("Error: File data format denied in line " + lineCounter + " containing: \"" + line + "\".");
                     entriesSkipped++;
                     continue;
                 }
 
                 if (!dateFormatValidation(lineToString[0])) {
-                    System.out.println("Error: Date format denied in line " + lineCounter + " containing: \"" + line + "\".");
                     entriesSkipped++;
                     continue;
                 }
 
                 if (!timeFormatValidation(lineToString[1])) {
-                    System.out.println("Error: Time format denied in line " + lineCounter + " containing: \"" + line + "\".");
                     entriesSkipped++;
                     continue;
                 }
 
                 if (!employeeService.rutFormatValidation(lineToString[2])) {
-                    System.out.println("Error: Rut format denied in line " + lineCounter + " containing: \"" + line + "\".");
+                    //System.out.println("Error: Rut format denied in line " + lineCounter + " containing: \"" + line + "\".");
                     entriesSkipped++;
                     continue;
                 }
@@ -114,7 +111,6 @@ public class ClockDataService {
                 Time time = Time.valueOf(lineToString[1] + ":00");
                 String rut = lineToString[2];
                 if (doesEntryExist(date, time, rut)) {
-                    System.out.println("Duplication avoided: The data of line " + lineCounter + " already exists in the database.");
                     duplicatesAvoided++;
                     continue;
                 }
@@ -130,14 +126,14 @@ public class ClockDataService {
             String formattedDuration = String.format("%.3f", durationSeconds).replace(",", "."); // Reemplaza , por .
 
             return ResponseEntity.status(HttpStatus.OK).body(
-                    formateClockDataMessage(entriesAdded, entriesSkipped, duplicatesAvoided, formattedDuration));
+                    formatClockDataMessage(entriesAdded, entriesSkipped, duplicatesAvoided, formattedDuration));
 
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error reading the file.");
         }
     }
 
-    private String formateClockDataMessage(int entriesAdded, int entriesSkipped, int duplicatesAvoided, String formattedDuration) {
+    public String formatClockDataMessage(int entriesAdded, int entriesSkipped, int duplicatesAvoided, String formattedDuration) {
         String message = "";
 
         // CASO EXITOSO
@@ -205,7 +201,7 @@ public class ClockDataService {
                     entriesSkipped, duplicatesAvoided, formattedDuration);
         }
 
-        // ADVERTENCIA: ENTRADAS EVITADAS Y DUPLICADAS
+        // ADVERTENCIA: ENTRADAS AÑADIDAS CON ENTRADAS DUPLICADAS
         if (entriesAdded != 0 && entriesSkipped == 0 && duplicatesAvoided != 0) {
             message = String.format("""
                             ADVERTENCIA: El archivo fue procesado por el sistema correctamente pero presentó información duplicada.
@@ -252,23 +248,23 @@ public class ClockDataService {
             String rut = cd.getRut();
             Date date = cd.getDate();
             Time time = cd.getTime();
-            System.out.println(cd); // DELETE
+            //System.out.println(cd); // DELETE
             // Check if the employee is late
             if (checkLateArrival(time)) {
-                System.out.println("atraso"); // DELETE
+                //System.out.println("atraso"); // DELETE
                 // How many minutes is the employee late
                 long minutes = calculateLateMinutes(time.toLocalTime());
-                System.out.println("minutes: " + minutes);
+                //System.out.println("minutes: " + minutes);
                 // Discount calculation
                 if (minutes > 10) {
-                    System.out.println("calcula atraso"); // DELETE
+                    //System.out.println("calcula atraso"); // DELETE
                     discountService.calculateDiscount(rut, date, time, minutes);
                 }
             }
 
             // Check for extra hours
             if (checkExtraHours(time)) {
-                System.out.println("hora extra"); // DELETE
+                //System.out.println("hora extra"); // DELETE
                 // How many minutes after exit time
                 long extraHoursMinutes = calculateExtraMinutes(time.toLocalTime());
 
@@ -276,10 +272,9 @@ public class ClockDataService {
                 extraHoursService.calculateExtraHours(rut, date, time, extraHoursMinutes);
             }
         }
-
     }
 
-    private boolean checkExtraHours(Time exit) {
+    public boolean checkExtraHours(Time exit) {
         LocalTime exitTime = LocalTime.of(18, 0, 0);
         LocalTime realExitTime = exit.toLocalTime();
         return realExitTime.isAfter(exitTime);
