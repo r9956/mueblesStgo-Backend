@@ -14,6 +14,10 @@ public class AbsenceService {
     @Autowired
     AbsenceRepository absenceRepository;
 
+    public List<AbsenceEntity> getAll() {
+        return absenceRepository.findAll();
+    }
+
     public void createAbsence(String rut, Date date, long minutes) {
         AbsenceEntity absence = new AbsenceEntity();
         absence.setRut(rut);
@@ -38,5 +42,4 @@ public class AbsenceService {
 
         return totalDiscount;
     }
-
 }

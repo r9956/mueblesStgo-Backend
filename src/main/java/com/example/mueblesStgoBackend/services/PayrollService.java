@@ -1,10 +1,27 @@
 package com.example.mueblesStgoBackend.services;
 
+import com.example.mueblesStgoBackend.entities.AbsenceExcuseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
 public class PayrollService {
 
-    public void generateMonthlyPayroll() {
+    @Autowired
+    private AbsenceService absenceService;
 
-        // Look for absence's excuses
+    @Autowired
+    private AbsenceExcuseService absenceExcuseService;
+
+    public void generateMonthlyPayroll(int year, int month) {
+
+        // Busca las inasistencias justificadas
+        List<AbsenceExcuseEntity> excusedAbsences = absenceExcuseService.getAllByYearAndMonth(year, month);
+
+
+
 
         // Apply excuses
 

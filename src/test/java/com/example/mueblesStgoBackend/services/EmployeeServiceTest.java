@@ -2,7 +2,6 @@ package com.example.mueblesStgoBackend.services;
 
 import com.example.mueblesStgoBackend.entities.EmployeeEntity;
 import com.example.mueblesStgoBackend.repositories.EmployeeRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;

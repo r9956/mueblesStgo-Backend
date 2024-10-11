@@ -1,6 +1,7 @@
 package com.example.mueblesStgoBackend.repositories;
 
 import com.example.mueblesStgoBackend.entities.AbsenceEntity;
+import com.example.mueblesStgoBackend.entities.AbsenceExcuseEntity;
 import com.example.mueblesStgoBackend.entities.DiscountEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,9 @@ public interface AbsenceRepository extends JpaRepository<AbsenceEntity, Long> {
     List<AbsenceEntity> filterByRutYearAndMonth(@Param("rut") String rut,
                                                  @Param("year") int year,
                                                  @Param("month") int month);
+
+    @Query(value="SELECT * FROM absence WHERE YEAR(fromDate) = :year AND MONTH(fromDate) = :month", nativeQuery = true)
+    List<AbsenceEntity> findAllByYearAndMonth(
+            @Param("year") int year,
+            @Param("month") int month);
 }

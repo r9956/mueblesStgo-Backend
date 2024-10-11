@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;
+import java.util.List;
 
 @Service
 public class AbsenceExcuseService {
@@ -29,6 +30,10 @@ public class AbsenceExcuseService {
 
     @Autowired
     private AbsenceExcuseRepository absenceExcuseRepository;
+
+    public List<AbsenceExcuseEntity> getAllByYearAndMonth(int year, int month) {
+        return absenceExcuseRepository.findAllByYearAndMonth(year, month);
+    }
 
     private boolean validateAbsenceDates(Date fromDate, Date toDate) {
         return dateService.isDateRangeValid(fromDate, toDate);
@@ -82,4 +87,5 @@ public class AbsenceExcuseService {
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: El rut " + rut + " no es válido.");
     }
+
 }
