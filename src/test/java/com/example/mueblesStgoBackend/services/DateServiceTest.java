@@ -20,7 +20,7 @@ public class DateServiceTest {
     }
 
     /**
-     * Tests for calculateDaysBetween
+     * Testing for calculateDaysBetween
      **/
 
     @Test
@@ -63,7 +63,7 @@ public class DateServiceTest {
     }
 
     /**
-     * Tests for isDateRangeValid
+     * Testing for isDateRangeValid
      **/
 
     @Test

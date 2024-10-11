@@ -64,13 +64,13 @@ public class EmployeeService {
         if (!doesRutExists(employee.getRut())) {
             if (rutFormatValidation(employee.getRut())) {
                 employeeRepository.save(employee);
-                return status(HttpStatus.OK).body("Employee created successfully.");
+                return status(HttpStatus.OK).body("Empleado creado correctamente.");
             }
             else {
-                return status(HttpStatus.EXPECTATION_FAILED).body("The employee's rut format is not correct.");
+                return status(HttpStatus.EXPECTATION_FAILED).body("El rut del empleado no existe o está incorrecto.");
             }
         }
-        return status(HttpStatus.CONFLICT).body("The employee already exists in the database.");
+        return status(HttpStatus.CONFLICT).body("El empleado ya existe en la base de datos");
     }
 
 
@@ -85,10 +85,10 @@ public class EmployeeService {
     public ResponseEntity<String> delete(Long id) {
         if (getById(id).isPresent()) {
             employeeRepository.deleteById(id);
-            return ResponseEntity.status(HttpStatus.OK).body("Employee deleted successfully.");
+            return ResponseEntity.status(HttpStatus.OK).body("Empleado eliminado correctamente");
         }
         else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There's no employee registered with id " + id + ".");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No existen empleados registrados con el id " + id + ".");
         }
     }
 

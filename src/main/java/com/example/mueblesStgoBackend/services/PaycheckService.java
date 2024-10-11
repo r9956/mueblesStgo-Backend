@@ -34,39 +34,39 @@ public class PaycheckService {
     public PaycheckEntity calculatePaycheck(String rut, int year, int month) {
         EmployeeEntity employee = employeeService.findByRut(rut);
 
-        // Calculate service years
+        // Calcula los años de servicio
         int serviceYears = Math.toIntExact(ChronoUnit.YEARS.between(
                 employee.getStartDate().toLocalDate(),
                 LocalDate.now(ZoneId.of("America/Santiago"))
         ));
 
-        // Calculate service bonus percentage
+        // Calcula el porcentaje del bono por años de servicio
         double serviceBonusPercentage = serviceBonusRepository.getPercentageByServiceYears(serviceYears) / 100.0;
 
-        // Get employee's base salary
+        // Obtiene el salario base del empleado
         int baseSalary = categoryService
                 .findByCategory(employee.getCategory())
                 .getMonthlySalary();
 
-        // Calculate service bonus payment
+        // Calcula el monto del bono por años de servicio
         int serviceBonus = (int) Math.floor(baseSalary * serviceBonusPercentage);
 
-        // Calculate extra hours bonus
+        // Calcula el bono por horas extra
         int extraHoursBonus = extraHoursService.calculateMonthlyExtraHoursPayment(rut, year, month);
 
-        // Calculate late arrivals and unexcused absences discounts
+        // Calcula descuentos por atrasos y ausencias injustificadas
         int discounts = discountService.calculateTotalDiscount(rut, year, month, baseSalary);
 
-        // Calculate gross salary
+        // Calcula el sueldo bruto
         int grossSalary = baseSalary + serviceBonus + extraHoursBonus - discounts;
 
-        // Calculate retirement deductions
+        // Calcula descuentos por jubilación
         int retirementDeduction = (int) Math.floor(grossSalary * 0.1);
 
-        // Calculate health insurance deduction
+        // Calcula descuentos por salud
         int healthDeduction = (int) Math.floor(grossSalary * 0.08);
 
-        // Generates paycheck
+        // Genera el pago (paycheck)
         PaycheckEntity paycheck = new PaycheckEntity();
         paycheck.setRut(rut);
         paycheck.setName(employee.getLastNames() + " " + employee.getNames());
@@ -84,6 +84,5 @@ public class PaycheckService {
         paycheck.setTotalSalary(grossSalary - retirementDeduction - healthDeduction);
         return paycheckRepository.save(paycheck);
     }
-
 
 }
