@@ -1,8 +1,6 @@
 package com.example.mueblesStgoBackend.repositories;
 
 import com.example.mueblesStgoBackend.entities.AbsenceEntity;
-import com.example.mueblesStgoBackend.entities.AbsenceExcuseEntity;
-import com.example.mueblesStgoBackend.entities.DiscountEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -19,9 +17,13 @@ public interface AbsenceRepository extends JpaRepository<AbsenceEntity, Long> {
                               @Param("date") Date date);
 
     @Query(value = "SELECT * FROM absence WHERE excused = false AND discount_applied = false AND rut = :rut AND YEAR(date) = :year AND MONTH(date) = :month; \n", nativeQuery = true)
-    List<AbsenceEntity> filterByRutYearAndMonth(@Param("rut") String rut,
-                                                 @Param("year") int year,
-                                                 @Param("month") int month);
+    List<AbsenceEntity> filterUnexcusedByRutYearAndMonth(@Param("rut") String rut,
+                                                         @Param("year") int year,
+                                                         @Param("month") int month);
+
+    @Query(value = "SELECT * FROM absence WHERE excused = false AND discount_applied = false AND YEAR(date) = :year AND MONTH(date) = :month;", nativeQuery = true)
+    List<AbsenceEntity> filterAllUnexcusedByYearAndMonth(@Param("year") int year,
+                                                         @Param("month") int month);
 
     @Query(value="SELECT * FROM absence WHERE YEAR(fromDate) = :year AND MONTH(fromDate) = :month", nativeQuery = true)
     List<AbsenceEntity> findAllByYearAndMonth(

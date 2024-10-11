@@ -31,10 +31,6 @@ public class AbsenceExcuseService {
     @Autowired
     private AbsenceExcuseRepository absenceExcuseRepository;
 
-    public List<AbsenceExcuseEntity> getAllByYearAndMonth(int year, int month) {
-        return absenceExcuseRepository.findAllByYearAndMonth(year, month);
-    }
-
     private boolean validateAbsenceDates(Date fromDate, Date toDate) {
         return dateService.isDateRangeValid(fromDate, toDate);
     }
@@ -53,22 +49,30 @@ public class AbsenceExcuseService {
         return absenceExcuseRepository.findAbsenceExcuse(rut, fromDate, toDate) != null;
     }
 
-    public ResponseEntity<String> excuseAbsence(String rut, Date fromDate, Date toDate) {
-        int counter = 0;
-        long days = dateService.calculateDaysBetween(fromDate, toDate) + 1;
+    public void applyExcuses(int year, int month) {
+        List<AbsenceEntity> absences = absenceService.findAllUnexcusedByYearAndMonth(year, month);
 
-        for (int i = 0; i < days; i++) {
-            Date date = Date.valueOf(fromDate.toLocalDate().plusDays(i));
-            AbsenceEntity absence = absenceService.findAbsenceByRutAndDate(rut, date);
+        for (AbsenceEntity absence : absences) {
+            List<AbsenceExcuseEntity> excuses = absenceExcuseRepository.findAllByRutAndYearAndMonth(absence.getRut(), year, month);
 
-            if (absence != null) {
-                absence.setExcused(true);
-                absenceRepository.save(absence);
-                counter++;
+            for (AbsenceExcuseEntity excuse : excuses) {
+                if (isDateWithinRange(absence.getDate(), excuse.getFromDate(), excuse.getToDate())) {
+                    excuseAbsence(absence);
+                }
             }
         }
+    }
 
-        return ResponseEntity.status(HttpStatus.OK).body("Absence excuse processed successfully.\n Total days excused: " + counter + ".");
+    public void excuseAbsence(AbsenceEntity absence) {
+        if (!absence.isExcused()) {
+            absence.setExcused(true);
+            absenceRepository.save(absence);
+        }
+    }
+
+    private boolean isDateWithinRange(Date absenceDate, Date fromDate, Date toDate) {
+        return (absenceDate.equals(fromDate) || absenceDate.equals(toDate)) ||
+                (absenceDate.after(fromDate) && absenceDate.before(toDate));
     }
 
     public ResponseEntity<String> addExcuse(String rut, Date fromDate, Date toDate, MultipartFile file) {
@@ -87,5 +91,4 @@ public class AbsenceExcuseService {
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body("Error: El rut " + rut + " no es válido.");
     }
-
 }

@@ -31,7 +31,7 @@ public class DiscountService {
 
     public void calculateDiscount(String rut, Date date, Time time, long minutes) {
         double discountPercentage = 0.00;
-        System.out.println("___ DISCOUNT SERVICE ___");
+
         // > 10 min: 1%
         if (minutes > 10 && minutes <= 25) {
             discountPercentage = 0.01;
@@ -54,7 +54,6 @@ public class DiscountService {
         if (minutes > 70) {
             // Crea una inasistencia
             absenceService.createAbsence(rut, date, minutes);
-            System.out.println("Inasistencia creada");
         }
     }
 
@@ -72,4 +71,25 @@ public class DiscountService {
 
         return totalDiscount + totalAbsencesDiscount;
     }
+
+    public DiscountEntity getDiscountByRutAndDate(String rut, Date date) {
+        return discountRepository.findByRutAndDate(rut, date);
+    }
+
+    public void applyDiscount(String rut, Date date) {
+        DiscountEntity discount = getDiscountByRutAndDate(rut, date);
+        discount.setApplied(true);
+        discountRepository.save(discount);
+    }
+
+    public void applyDiscounts(int year, int month) {
+        List<DiscountEntity> monthlydiscounts = discountRepository.filterByYearAndMonth(year, month);
+        for (DiscountEntity discount : monthlydiscounts) {
+            if (!discount.isApplied()) {
+                applyDiscount(discount.getRut(), discount.getDate());
+            }
+        }
+    }
+
+
 }

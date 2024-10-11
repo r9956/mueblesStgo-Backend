@@ -18,8 +18,20 @@ public interface AbsenceExcuseRepository extends JpaRepository<AbsenceExcuseEnti
             @Param("fromDate") Date fromDate,
             @Param("toDate") Date toDate);
 
-    @Query(value="SELECT * FROM absence_excuse WHERE YEAR(fromDate) = :year AND MONTH(fromDate) = :month", nativeQuery = true)
+    @Query(value="SELECT * FROM absence_excuse WHERE (YEAR(from_date) = :year AND MONTH(from_date) = :month) OR (YEAR(to_date) = :year AND MONTH(to_date) = :month)", nativeQuery = true)
     List<AbsenceExcuseEntity> findAllByYearAndMonth(
+            @Param("year") int year,
+            @Param("month") int month);
+
+    @Query(value="SELECT * FROM absence_excuse WHERE rut = :rut AND (YEAR(from_date) = :year AND MONTH(from_date) = :month) OR (YEAR(to_date) = :year AND MONTH(to_date) = :month)", nativeQuery = true)
+    List<AbsenceExcuseEntity> findAllByRutAndYearAndMonth(
+            @Param("rut") String rut,
+            @Param("year") int year,
+            @Param("month") int month);
+
+    @Query(value = "SELECT * FROM absence_excuse WHERE rut = :rut AND (YEAR(from_date) = :year AND MONTH(from_date) = :month) OR (YEAR(to_date) = :year AND MONTH(to_date) = :month)", nativeQuery = true)
+    AbsenceExcuseEntity findByRutAndYearAndMonth(
+            @Param("rut") String rut,
             @Param("year") int year,
             @Param("month") int month);
 }

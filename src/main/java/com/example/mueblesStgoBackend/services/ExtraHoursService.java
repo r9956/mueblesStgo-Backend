@@ -53,4 +53,30 @@ public class ExtraHoursService {
         extraHours.setPaid(false);
         extraHoursRepository.save(extraHours);
     }
+
+    public List<ExtraHoursEntity> getAllByYearAndMonth(int year, int month) {
+        return extraHoursRepository.findAllByYearAndMonth(year, month);
+    }
+
+    public ExtraHoursEntity getByRutAndYearAndMonth(String rut, int year, int month) {
+        return extraHoursRepository.findByRutAndYearAndMonth(rut, year, month);
+    }
+
+    public void updateAuthorization(ExtraHoursEntity extraHours, boolean authorized) {
+        extraHours.setAuthorized(authorized);
+        extraHoursRepository.save(extraHours);
+    }
+
+    public void payExtraHours(String rut, Date date) {
+        ExtraHoursEntity extraHour = extraHoursRepository.findAuthorizedByRutAndDate(rut, date);
+        extraHour.setPaid(true);
+        extraHoursRepository.save(extraHour);
+    }
+
+    public void payAllAuthorizedExtraHours(int year, int month) {
+        List<ExtraHoursEntity> extraHours = extraHoursRepository.findAllAuthorizedByYearAndMonth(year, month);
+        for (ExtraHoursEntity e : extraHours) {
+            payExtraHours(e.getRut(), e.getDate());
+        }
+    }
 }

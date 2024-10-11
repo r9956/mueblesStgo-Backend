@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 public class PaycheckController {
 
     @Autowired
-    PaycheckService paycheckService;
+    private PaycheckService paycheckService;
 
     @PostMapping("create")
     public PaycheckEntity createPaycheck(

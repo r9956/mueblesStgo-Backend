@@ -84,5 +84,4 @@ public class PaycheckService {
         paycheck.setTotalSalary(grossSalary - retirementDeduction - healthDeduction);
         return paycheckRepository.save(paycheck);
     }
-
 }

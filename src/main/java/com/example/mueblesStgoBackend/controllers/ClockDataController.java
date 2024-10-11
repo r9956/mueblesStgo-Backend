@@ -27,7 +27,7 @@ public class ClockDataController {
     }
 
     @PostMapping("/analyze")
-    public void analyzeClockData() {
-        clockDataService.analyzeClockData();
+    public void analyzeClockData(@RequestParam("year") int year, @RequestParam("month") int month) {
+        clockDataService.analyzeClockData(year, month);
     }
 }

@@ -102,7 +102,6 @@ public class ClockDataService {
                 }
 
                 if (!employeeService.rutFormatValidation(lineToString[2])) {
-                    //System.out.println("Error: Rut format denied in line " + lineCounter + " containing: \"" + line + "\".");
                     entriesSkipped++;
                     continue;
                 }
@@ -236,40 +235,39 @@ public class ClockDataService {
         clockData.setDate(date);
         clockData.setTime(time);
         clockData.setRut(rut);
+        clockData.setProcessed(false);
         clockDataRepository.save(clockData);
     }
 
-    public void analyzeClockData(){
-        List<ClockDataEntity> clockData = clockDataRepository.findAll();
-
-        // Cada entrada debe marcar si fue procesada o no
+    public void analyzeClockData(int year, int month){
+        List<ClockDataEntity> clockData = clockDataRepository.findAllByYearAndMonth(year, month);
 
         for (ClockDataEntity cd : clockData) {
             String rut = cd.getRut();
             Date date = cd.getDate();
             Time time = cd.getTime();
-            //System.out.println(cd); // DELETE
-            // Check if the employee is late
-            if (checkLateArrival(time)) {
-                //System.out.println("atraso"); // DELETE
-                // How many minutes is the employee late
-                long minutes = calculateLateMinutes(time.toLocalTime());
-                //System.out.println("minutes: " + minutes);
-                // Discount calculation
-                if (minutes > 10) {
-                    //System.out.println("calcula atraso"); // DELETE
-                    discountService.calculateDiscount(rut, date, time, minutes);
+
+            if (employeeService.doesRutExists(rut)) {
+                // Comprueba si el empleado tuvo un atraso
+                if (checkLateArrival(time)) {
+                    // Calcula cuántos minutos de atraso se produjeron
+                    long minutes = calculateLateMinutes(time.toLocalTime());
+                    // Calcula el descuento correspondiente
+                    if (minutes > 10) {
+                        discountService.calculateDiscount(rut, date, time, minutes);
+                    }
                 }
-            }
 
-            // Check for extra hours
-            if (checkExtraHours(time)) {
-                //System.out.println("hora extra"); // DELETE
-                // How many minutes after exit time
-                long extraHoursMinutes = calculateExtraMinutes(time.toLocalTime());
+                // Comprueba si aplican horas extras
+                if (checkExtraHours(time)) {
+                    // Calcula cuántos minutos después de la salida oficial se trabajaron
+                    long extraHoursMinutes = calculateExtraMinutes(time.toLocalTime());
+                    // Calcula el monto correspondiente al pago de horas extra
+                    extraHoursService.calculateExtraHours(rut, date, time, extraHoursMinutes);
+                }
 
-                // Extra hours payment calculation
-                extraHoursService.calculateExtraHours(rut, date, time, extraHoursMinutes);
+                cd.setProcessed(true);
+                clockDataRepository.save(cd);
             }
         }
     }
@@ -303,5 +301,13 @@ public class ClockDataService {
         return 0;
     }
 
+    public boolean isThereClockDataForYearAndMonth(int year, int month) {
+        List<ClockDataEntity> clockData = clockDataRepository.findAllByYearAndMonth(year, month);
+        return clockData != null && !clockData.isEmpty();
+    }
 
+    public boolean isThereUnprocessedDataForYearAndMonth(int year, int month) {
+        List<ClockDataEntity> clockData = clockDataRepository.findAllUnprocessedByYearAndMonth(year, month);
+        return clockData != null && !clockData.isEmpty();
+    }
 }
