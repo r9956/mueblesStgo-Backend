@@ -18,6 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.ArgumentCaptor;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
 public class PaycheckServiceTest {
@@ -47,6 +50,135 @@ public class PaycheckServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
+
+    /**
+     * Tests for getById
+     **/
+    @Test
+    void whenPaycheckExists_thenReturnPaycheck() {
+        // Given
+        Long id = 1L;
+        PaycheckEntity mockPaycheck = new PaycheckEntity();
+        when(paycheckRepository.findById(id)).thenReturn(Optional.of(mockPaycheck));
+
+        // When
+        Optional<PaycheckEntity> result = paycheckServiceTest.getById(id);
+
+        // Then
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(mockPaycheck);
+    }
+
+    @Test
+    void whenPaycheckDoesNotExist_thenReturnEmpty() {
+        // Given
+        Long id = 1L;
+        when(paycheckRepository.findById(id)).thenReturn(Optional.empty());
+
+        // When
+        Optional<PaycheckEntity> result = paycheckServiceTest.getById(id);
+
+        // Then
+        assertThat(result).isNotPresent();
+    }
+
+    /**
+     * Testing getAll
+     **/
+    @Test
+    void whenGetAllPaychecks_thenReturnListOfPaychecks() {
+        // Given
+        List<PaycheckEntity> mockPaychecks = new ArrayList<>();
+        mockPaychecks.add(new PaycheckEntity());
+        mockPaychecks.add(new PaycheckEntity());
+        when(paycheckRepository.findAll()).thenReturn(mockPaychecks);
+
+        // When
+        List<PaycheckEntity> result = paycheckServiceTest.getAll();
+
+        // Then
+        assertThat(result).hasSize(2);
+        assertThat(result).isEqualTo(mockPaychecks);
+    }
+
+    @Test
+    void whenNoPaychecksExist_thenReturnEmptyList() {
+        // Given
+        when(paycheckRepository.findAll()).thenReturn(new ArrayList<>());
+
+        // When
+        List<PaycheckEntity> result = paycheckServiceTest.getAll();
+
+        // Then
+        assertThat(result).isEmpty();
+    }
+
+    /**
+     * Testing getByYearAndMonth
+     **/
+    @Test
+    void whenGetPaychecksByYearAndMonth_thenReturnListOfPaychecks() {
+        // Given
+        int year = 2023;
+        int month = 10;
+        List<PaycheckEntity> mockPaychecks = new ArrayList<>();
+        mockPaychecks.add(new PaycheckEntity());
+        when(paycheckRepository.getByYearAndMonth(year, month)).thenReturn(mockPaychecks);
+
+        // When
+        List<PaycheckEntity> result = paycheckServiceTest.getByYearAndMonth(year, month);
+
+        // Then
+        assertThat(result).hasSize(1);
+        assertThat(result).isEqualTo(mockPaychecks);
+    }
+
+    @Test
+    void whenNoPaychecksFoundByYearAndMonth_thenReturnEmptyList() {
+        // Given
+        int year = 2023;
+        int month = 10;
+        when(paycheckRepository.getByYearAndMonth(year, month)).thenReturn(new ArrayList<>());
+
+        // When
+        List<PaycheckEntity> result = paycheckServiceTest.getByYearAndMonth(year, month);
+
+        // Then
+        assertThat(result).isEmpty();
+    }
+
+    /**
+     * Testing getAllByRut
+     **/
+    @Test
+    void whenGetPaychecksByRut_thenReturnListOfPaychecks() {
+        // Given
+        String rut = "12.345.678-9";
+        List<PaycheckEntity> mockPaychecks = new ArrayList<>();
+        mockPaychecks.add(new PaycheckEntity());
+        when(paycheckRepository.findAllByRut(rut)).thenReturn(mockPaychecks);
+
+        // When
+        List<PaycheckEntity> result = paycheckServiceTest.getAllByRut(rut);
+
+        // Then
+        assertThat(result).hasSize(1);
+        assertThat(result).isEqualTo(mockPaychecks);
+    }
+
+    @Test
+    void whenNoPaychecksFoundByRut_thenReturnEmptyList() {
+        // Given
+        String rut = "12.345.678-9";
+        when(paycheckRepository.findAllByRut(rut)).thenReturn(new ArrayList<>());
+
+        // When
+        List<PaycheckEntity> result = paycheckServiceTest.getAllByRut(rut);
+
+        // Then
+        assertThat(result).isEmpty();
+    }
+
 
     /**
      * Testing calculatePaycheck

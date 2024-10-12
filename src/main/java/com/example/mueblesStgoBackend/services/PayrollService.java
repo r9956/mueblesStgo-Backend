@@ -37,7 +37,7 @@ public class PayrollService {
     public ResponseEntity<String> generateMonthlyPayroll(int year, int month) {
 
         if (clockDataService.isThereClockDataForYearAndMonth(year, month)) {
-            if (clockDataService.isThereUnprocessedDataForYearAndMonth(year, month)) {
+            if (clockDataService.isThereUnprocessedDataForYearAndMonth(year, month) && !doesPayrollExists(year, month)) {
                 // Procesa la información obtenida del reloj
                 clockDataService.analyzeClockData(year, month);
 
@@ -53,7 +53,6 @@ public class PayrollService {
                 // Genera el cálculo del pago mensual para cada empleado
                 for (EmployeeEntity e : employees) {
                     if (employeeService.doesRutExists(e.getRut())) {
-                        System.out.println(e.getRut());
                         paycheckService.calculatePaycheck(e.getRut(), year, month);
                     }
                 }
@@ -72,11 +71,15 @@ public class PayrollService {
 
                 return ResponseEntity.ok().body("Payroll generado correctamente.");
             }
-            return ResponseEntity.badRequest().body("Ya existe un payroll generado para esta mes y año.");
+            return ResponseEntity.badRequest().body("Error: Ya existe un payroll generado para esta mes y año.");
         }
         else {
-            return ResponseEntity.badRequest().body("No existe información de reloj para el año y mes escogido.");
+            return ResponseEntity.badRequest().body("Error: No existe información de reloj para el año y mes escogido.");
         }
+    }
+
+    public boolean doesPayrollExists(int year, int month) {
+        return payrollRepository.findByYearAndMonth(year, month) != null;
     }
 
 }

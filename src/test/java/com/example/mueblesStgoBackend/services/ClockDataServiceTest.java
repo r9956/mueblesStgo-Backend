@@ -24,7 +24,10 @@ import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -616,68 +619,194 @@ public class ClockDataServiceTest {
     }
 
     /**
+     * Testing isThereClockDataForYearAndMonth
+     */
+    @Test
+    void whenClockDataExists_thenReturnsTrue() {
+        // Given
+        ClockDataEntity clockDataEntity = new ClockDataEntity();
+        clockDataEntity.setRut("12.345.678-9");
+        clockDataEntity.setDate(Date.valueOf("2022-08-17"));
+        clockDataEntity.setTime(Time.valueOf("08:07:00"));
+        when(clockDataRepository.findAllByYearAndMonth(2022, 8))
+                .thenReturn(List.of(clockDataEntity));
+
+        // When
+        boolean result = clockData.isThereClockDataForYearAndMonth(2022, 8);
+
+        // Then
+        Assertions.assertTrue(result);
+        verify(clockDataRepository).findAllByYearAndMonth(2022, 8);
+    }
+
+    @Test
+    public void whenNoDataExists_thenReturnsFalse() {
+        // Given
+        int year = 2025;
+        int month = 10;
+        when(clockDataRepository.findAllByYearAndMonth(year, month)).thenReturn(Collections.emptyList());
+
+        // WHen
+        boolean result = clockData.isThereClockDataForYearAndMonth(year, month);
+
+        // Then
+        assertThat(result).isFalse();
+        verify(clockDataRepository, times(1)).findAllByYearAndMonth(year, month);
+    }
+
+    @Test
+    public void whenRepositoryReturnsNull_thenReturnsFalse() {
+        // Given
+        int year = 2025;
+        int month = 10;
+        when(clockDataRepository.findAllByYearAndMonth(year, month)).thenReturn(null);
+
+        // When
+        boolean result = clockData.isThereClockDataForYearAndMonth(year, month);
+
+        // Then
+        assertThat(result).isFalse();
+        verify(clockDataRepository, times(1)).findAllByYearAndMonth(year, month);
+    }
+
+    /**
+     * Testing isThereUnprocessedDataForYearAndMonth
+     */
+    @Test
+    void whenUnprocessedDataExists_thenReturnsTrue() {
+        // Arrange
+        int year = 2025;
+        int month = 10;
+        List<ClockDataEntity> mockClockData = List.of(new ClockDataEntity());
+        when(clockDataRepository.findAllUnprocessedByYearAndMonth(year, month)).thenReturn(mockClockData);
+
+        // Act
+        boolean result = clockData.isThereUnprocessedDataForYearAndMonth(year, month);
+
+        // Assert
+        assertThat(result).isTrue();
+        verify(clockDataRepository, times(1)).findAllUnprocessedByYearAndMonth(year, month);
+    }
+
+    @Test
+    void whenNoUnprocessedDataExists_thenReturnsFalse() {
+        // Given
+        int year = 2025;
+        int month = 10;
+        when(clockDataRepository.findAllUnprocessedByYearAndMonth(year, month)).thenReturn(Collections.emptyList());
+
+        // When
+        boolean result = clockData.isThereUnprocessedDataForYearAndMonth(year, month);
+
+        // Then
+        assertThat(result).isFalse();
+        verify(clockDataRepository, times(1)).findAllUnprocessedByYearAndMonth(year, month);
+    }
+
+    @Test
+    public void whenRepositoryReturnsNullForUnprocessedData_thenReturnsFalse() {
+        // Given
+        int year = 2025;
+        int month = 10;
+        when(clockDataRepository.findAllUnprocessedByYearAndMonth(year, month)).thenReturn(null);
+
+        // When
+        boolean result = clockData.isThereUnprocessedDataForYearAndMonth(year, month);
+
+        // Then
+        assertThat(result).isFalse();
+        verify(clockDataRepository, times(1)).findAllUnprocessedByYearAndMonth(year, month);
+    }
+
+
+
+
+
+
+
+    /**
      * Tests for analyzeClockData
      **/
 
-//    @Test
-//    void whenEmployeeArrivesOnTime_thenNoDiscount() {
-//        // Given
-//        ClockDataEntity onTime = new ClockDataEntity(1L, Date.valueOf("2024-08-17"), Time.valueOf("08:00:00"), "12.345.678-9");
-//        when(clockDataRepository.findAll()).thenReturn(List.of(onTime));
-//
-//        // When
-//        clockData.analyzeClockData();
-//
-//        // Then
-//        // Verifica que el método calculateDiscount nunca es llamado porque el empleado llegó a tiempo
-//        verify(discountService, never()).calculateDiscount(anyString(), any(Date.class), any(Time.class), anyLong());
-//        // Verifica que el método calculateExtraHours nunca es llamado porque el empleado no presenta horas extra
-//        verify(extraHoursService, never()).calculateExtraHours(anyString(), any(Date.class), any(Time.class), anyLong());
-//    }
-//
-//    @Test
-//    void whenEmployeeArrivesLateButWithin10Minutes_thenNoDiscount() {
-//        // Given
-//        ClockDataEntity lateButWithin10Minutes = new ClockDataEntity(1L, Date.valueOf("2024-08-17"), Time.valueOf("08:05:00"), "12.345.678-9");
-//        when(clockDataRepository.findAll()).thenReturn(List.of(lateButWithin10Minutes));
-//
-//        // When
-//        clockData.analyzeClockData();
-//
-//        // Then
-//        // Verifica que el método calculateDiscount nunca es llamado porque el empleado llegó a tiempo
-//        verify(discountService, never()).calculateDiscount(anyString(), any(Date.class), any(Time.class), anyLong());
-//        // Verifica que el método calculateExtraHours nunca es llamado porque el empleado no presenta horas extra
-//        verify(extraHoursService, never()).calculateExtraHours(anyString(), any(Date.class), any(Time.class), anyLong());
-//    }
-//
-//    @Test
-//    void whenLateMoreThan10Minutes_thenCalculateDiscount() {
-//        // Given
-//        ClockDataEntity lateMoreThan10Minutes = new ClockDataEntity(1L, Date.valueOf("2024-08-17"), Time.valueOf("08:15:00"), "12.345.678-9");
-//        when(clockDataRepository.findAll()).thenReturn(List.of(lateMoreThan10Minutes));
-//
-//        // When
-//        clockData.analyzeClockData();
-//
-//        // Then
-//        // Verifica que el método calculateDiscount sí es llamado porque el empleado presenta un atraso mayor a 10 minutos
-//        verify(discountService).calculateDiscount(lateMoreThan10Minutes.getRut(), lateMoreThan10Minutes.getDate(), lateMoreThan10Minutes.getTime(), 15L);
-//    }
-//
-//    @Test
-//    void whenEmployeeWorksLate_thenCalculateExtraHours() {
-//        // Given
-//        ClockDataEntity extraHours = new ClockDataEntity(1L, Date.valueOf("2024-08-17"), Time.valueOf("19:00:00"), "12.345.678-9");
-//        when(clockDataRepository.findAll()).thenReturn(List.of(extraHours));
-//
-//        // When
-//        clockData.analyzeClockData();
-//
-//        // Then
-//        // Verifica que el método calculateExtraHours sí es llamado porque el empleado trabajó 60 minutos adicionales
-//        verify(extraHoursService).calculateExtraHours(extraHours.getRut(), extraHours.getDate(), extraHours.getTime(), 60L);
-//    }
+    @Test
+    void whenEmployeeArrivesOnTime_thenNoDiscount() {
+        // Given
+        ClockDataEntity onTime = new ClockDataEntity(1L, Date.valueOf("2024-08-17"), Time.valueOf("08:00:00"), "12.345.678-9", false);
+        when(clockDataRepository.findAllByYearAndMonth(2024, 8)).thenReturn(List.of(onTime));
+        when(employeeService.doesRutExists(onTime.getRut())).thenReturn(true);
+
+        // When
+        clockData.analyzeClockData(2024, 8);
+
+        // Then
+        // Verifica que el método calculateDiscount nunca es llamado porque el empleado llegó a tiempo
+        verify(discountService, never()).calculateDiscount(anyString(), any(Date.class), any(Time.class), anyLong());
+        // Verifica que el método calculateExtraHours nunca es llamado porque el empleado no presenta horas extra
+        verify(extraHoursService, never()).calculateExtraHours(anyString(), any(Date.class), any(Time.class), anyLong());
+        // Verifica que los datos del reloj se procesaron y guardaron
+        verify(clockDataRepository).save(onTime);
+        assertThat(onTime.isProcessed()).isTrue();
+    }
+
+    @Test
+    void whenEmployeeArrivesLateButWithin10Minutes_thenNoDiscount() {
+        // Given
+        ClockDataEntity lateButWithin10Minutes = new ClockDataEntity(1L, Date.valueOf("2024-08-17"), Time.valueOf("08:05:00"), "12.345.678-9", false);
+        when(clockDataRepository.findAllByYearAndMonth(2024, 8)).thenReturn(List.of(lateButWithin10Minutes));
+        when(employeeService.doesRutExists(lateButWithin10Minutes.getRut())).thenReturn(true); // Ensure employee exists
+
+        // When
+        clockData.analyzeClockData(2024, 8);
+
+        // Then
+        // Verifica que el método calculateDiscount nunca es llamado porque el empleado llegó a tiempo
+        verify(discountService, never()).calculateDiscount(anyString(), any(Date.class), any(Time.class), anyLong());
+        // Verifica que el método calculateExtraHours nunca es llamado porque el empleado no presenta horas extra
+        verify(extraHoursService, never()).calculateExtraHours(anyString(), any(Date.class), any(Time.class), anyLong());
+        // Verifica que los datos del reloj se procesaron y guardaron
+        verify(clockDataRepository).save(lateButWithin10Minutes);
+        assertThat(lateButWithin10Minutes.isProcessed()).isTrue();
+    }
+
+    @Test
+    void whenLateMoreThan10Minutes_thenCalculateDiscount() {
+        // Given
+        ClockDataEntity lateMoreThan10Minutes = new ClockDataEntity(1L, Date.valueOf("2024-08-17"), Time.valueOf("08:15:00"), "12.345.678-9", false);
+        when(clockDataRepository.findAllByYearAndMonth(2024, 8)).thenReturn(List.of(lateMoreThan10Minutes));
+        when(employeeService.doesRutExists(lateMoreThan10Minutes.getRut())).thenReturn(true); // Ensure employee exists
+
+        // When
+        clockData.analyzeClockData(2024, 8);
+
+        // Then
+        // Verifica que el método calculateDiscount sí es llamado porque el empleado presenta un atraso mayor a 10 minutos
+        verify(discountService).calculateDiscount(lateMoreThan10Minutes.getRut(), lateMoreThan10Minutes.getDate(), lateMoreThan10Minutes.getTime(), 15L);
+        // Verifica que el método calculateExtraHours nunca es llamado porque el empleado no presenta horas extra
+        verify(extraHoursService, never()).calculateExtraHours(anyString(), any(Date.class), any(Time.class), anyLong());
+        // Verifica que los datos del reloj se procesaron y guardaron
+        verify(clockDataRepository).save(lateMoreThan10Minutes);
+        assertThat(lateMoreThan10Minutes.isProcessed()).isTrue();
+    }
+
+    @Test
+    void whenEmployeeWorksLate_thenCalculateExtraHours() {
+        // Given
+        ClockDataEntity extraHours = new ClockDataEntity(1L, Date.valueOf("2024-08-17"), Time.valueOf("19:00:00"), "12.345.678-9", false);
+        when(clockDataRepository.findAllByYearAndMonth(2024, 8)).thenReturn(List.of(extraHours));
+        when(employeeService.doesRutExists(extraHours.getRut())).thenReturn(true); // Ensure employee exists
+
+        // When
+        clockData.analyzeClockData(2024, 8);
+
+        // Then
+        // Verifica que el método calculateExtraHours sí es llamado porque el empleado trabajó 60 minutos adicionales
+        verify(extraHoursService).calculateExtraHours(extraHours.getRut(), extraHours.getDate(), extraHours.getTime(), 60L);
+        // Verifica que calculateDiscount nunca es llamado porque no hay atrasos
+        verify(discountService, never()).calculateDiscount(anyString(), any(Date.class), any(Time.class), anyLong());
+        // Verifica que los datos del reloj de procesaron y guardaron
+        verify(clockDataRepository).save(extraHours);
+        assertThat(extraHours.isProcessed()).isTrue();
+    }
 
     /**
      * Tests for checkExtraHours

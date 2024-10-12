@@ -25,8 +25,4 @@ public interface AbsenceRepository extends JpaRepository<AbsenceEntity, Long> {
     List<AbsenceEntity> filterAllUnexcusedByYearAndMonth(@Param("year") int year,
                                                          @Param("month") int month);
 
-    @Query(value="SELECT * FROM absence WHERE YEAR(fromDate) = :year AND MONTH(fromDate) = :month", nativeQuery = true)
-    List<AbsenceEntity> findAllByYearAndMonth(
-            @Param("year") int year,
-            @Param("month") int month);
 }

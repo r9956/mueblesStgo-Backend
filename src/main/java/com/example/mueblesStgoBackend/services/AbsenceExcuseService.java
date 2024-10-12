@@ -31,7 +31,7 @@ public class AbsenceExcuseService {
     @Autowired
     private AbsenceExcuseRepository absenceExcuseRepository;
 
-    private boolean validateAbsenceDates(Date fromDate, Date toDate) {
+    public boolean validateAbsenceDates(Date fromDate, Date toDate) {
         return dateService.isDateRangeValid(fromDate, toDate);
     }
 
@@ -70,7 +70,7 @@ public class AbsenceExcuseService {
         }
     }
 
-    private boolean isDateWithinRange(Date absenceDate, Date fromDate, Date toDate) {
+    public boolean isDateWithinRange(Date absenceDate, Date fromDate, Date toDate) {
         return (absenceDate.equals(fromDate) || absenceDate.equals(toDate)) ||
                 (absenceDate.after(fromDate) && absenceDate.before(toDate));
     }

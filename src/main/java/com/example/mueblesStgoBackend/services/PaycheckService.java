@@ -10,6 +10,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PaycheckService {
@@ -30,6 +32,22 @@ public class PaycheckService {
 
     @Autowired
     DiscountService discountService;
+
+    public Optional<PaycheckEntity> getById(Long id) {
+        return paycheckRepository.findById(id);
+    }
+
+    public List<PaycheckEntity> getAll() {
+        return paycheckRepository.findAll();
+    }
+
+    public List<PaycheckEntity> getByYearAndMonth(int year, int month) {
+        return paycheckRepository.getByYearAndMonth(year, month);
+    }
+
+    public List<PaycheckEntity> getAllByRut(String rut) {
+        return paycheckRepository.findAllByRut(rut);
+    }
 
     public PaycheckEntity calculatePaycheck(String rut, int year, int month) {
         EmployeeEntity employee = employeeService.findByRut(rut);
@@ -84,4 +102,5 @@ public class PaycheckService {
         paycheck.setTotalSalary(grossSalary - retirementDeduction - healthDeduction);
         return paycheckRepository.save(paycheck);
     }
+
 }

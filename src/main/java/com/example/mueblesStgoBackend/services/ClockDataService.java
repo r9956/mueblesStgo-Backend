@@ -83,7 +83,6 @@ public class ClockDataService {
             int lineCounter = 0;
             while ((line = reader.readLine()) != null) {
                 lineCounter++;
-                //System.out.println(line);
                 String[] lineToString = line.split(";");
 
                 if (!fileDataFormatValidation(lineToString)) {
@@ -239,6 +238,16 @@ public class ClockDataService {
         clockDataRepository.save(clockData);
     }
 
+    public boolean isThereClockDataForYearAndMonth(int year, int month) {
+        List<ClockDataEntity> clockData = clockDataRepository.findAllByYearAndMonth(year, month);
+        return clockData != null && !clockData.isEmpty();
+    }
+
+    public boolean isThereUnprocessedDataForYearAndMonth(int year, int month) {
+        List<ClockDataEntity> clockData = clockDataRepository.findAllUnprocessedByYearAndMonth(year, month);
+        return clockData != null && !clockData.isEmpty();
+    }
+
     public void analyzeClockData(int year, int month){
         List<ClockDataEntity> clockData = clockDataRepository.findAllByYearAndMonth(year, month);
 
@@ -299,15 +308,5 @@ public class ClockDataService {
             return java.time.Duration.between(endTime, exitTime).toMinutes();
         }
         return 0;
-    }
-
-    public boolean isThereClockDataForYearAndMonth(int year, int month) {
-        List<ClockDataEntity> clockData = clockDataRepository.findAllByYearAndMonth(year, month);
-        return clockData != null && !clockData.isEmpty();
-    }
-
-    public boolean isThereUnprocessedDataForYearAndMonth(int year, int month) {
-        List<ClockDataEntity> clockData = clockDataRepository.findAllUnprocessedByYearAndMonth(year, month);
-        return clockData != null && !clockData.isEmpty();
     }
 }
