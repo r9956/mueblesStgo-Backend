@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Build maven') {
             steps {
-                checkout scmGit(branches: [[name: '*/master']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/r9956/mueblesStgo-Backend']])
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/r9956/mueblesStgo-Backend']])
                 bat 'mvn clean package'
             }
         }
