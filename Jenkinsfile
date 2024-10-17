@@ -4,7 +4,7 @@ pipeline {
         DB_HOST = '192.168.1.88'
     }
     tools {
-        maven 'maven_3_9_9'
+        maven 'maven_3.9.9'
     }
     stages {
         stage('Build maven') {
