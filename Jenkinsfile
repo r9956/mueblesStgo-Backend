@@ -31,7 +31,7 @@ pipeline {
         stage('Push image to Docker Hub') {
             steps {
                 script{
-                    bat 'docker login -u r9956 -p admin'
+                    bat 'docker login -u r9956 -p EzioSeli3_'
                     bat 'docker push r9956/payroll-backend:latest'
                 }
             }
