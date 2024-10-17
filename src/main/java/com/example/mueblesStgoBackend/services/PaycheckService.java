@@ -77,6 +77,9 @@ public class PaycheckService {
 
         // Calcula el sueldo bruto
         int grossSalary = baseSalary + serviceBonus + extraHoursBonus - discounts;
+        if (grossSalary < 0) {
+            grossSalary = 0;
+        }
 
         // Calcula descuentos por jubilación
         int retirementDeduction = (int) Math.floor(grossSalary * 0.1);
@@ -100,6 +103,9 @@ public class PaycheckService {
         paycheck.setRetirementDeduction(retirementDeduction);
         paycheck.setHealthDeduction(healthDeduction);
         paycheck.setTotalSalary(grossSalary - retirementDeduction - healthDeduction);
+        if (paycheck.getTotalSalary() < 0) {
+            paycheck.setTotalSalary(0);
+        }
         return paycheckRepository.save(paycheck);
     }
 

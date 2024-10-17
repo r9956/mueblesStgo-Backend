@@ -44,13 +44,13 @@ public class ExtraHoursAuthorizationService {
         for (ExtraHoursEntity extraHour : extraHours) {
             ExtraHoursAuthorizationEntity authorized = findAuthorization(extraHour.getRut(), extraHour.getDate());
             if (authorized != null) {
-                authorizeExtraHours(authorized.getRut(), year, month);
+                authorizeExtraHours(authorized.getId(), authorized.getRut(), year, month);
             }
         }
     }
 
-    public void authorizeExtraHours(String rut, int year, int month) {
-        ExtraHoursEntity extraHour = extraHoursService.getByRutAndYearAndMonth(rut, year, month);
+    public void authorizeExtraHours(long id, String rut, int year, int month) {
+        ExtraHoursEntity extraHour = extraHoursService.getByRutAndYearAndMonth(id, rut, year, month);
         if (extraHour != null) {
             extraHoursService.updateAuthorization(extraHour, true);
         }

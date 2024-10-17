@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -129,18 +130,20 @@ public class ExtraHoursAuthorizationServiceTest {
         int month = 10;
 
         ExtraHoursEntity extraHour = new ExtraHoursEntity();
+        extraHour.setId(1L);
         extraHour.setRut("12.345.678-9");
         extraHour.setDate(Date.valueOf("2024-10-01"));
         extraHour.setAuthorized(false);
 
         ExtraHoursAuthorizationEntity authorization = new ExtraHoursAuthorizationEntity();
+        authorization.setId(1L);
         authorization.setRut(extraHour.getRut());
         authorization.setDate(extraHour.getDate());
 
         // Mocking
         when(extraHoursService.getAllByYearAndMonth(year, month)).thenReturn(List.of(extraHour));
         when(extraHoursAuthorizationRepository.findByRutAndDate(extraHour.getRut(), extraHour.getDate())).thenReturn(authorization);
-        when(extraHoursService.getByRutAndYearAndMonth(extraHour.getRut(), year, month)).thenReturn(extraHour);
+        when(extraHoursService.getByRutAndYearAndMonth(extraHour.getId(), extraHour.getRut(), year, month)).thenReturn(extraHour);
 
         // When
         extraHoursAuthorizationService.authorizeExtraHoursByYearAndMonth(year, month);
@@ -150,6 +153,7 @@ public class ExtraHoursAuthorizationServiceTest {
         verify(extraHoursAuthorizationRepository, times(1)).findByRutAndDate(extraHour.getRut(), extraHour.getDate());
         verify(extraHoursService, times(1)).updateAuthorization(extraHour, true);
     }
+
 
 
 }

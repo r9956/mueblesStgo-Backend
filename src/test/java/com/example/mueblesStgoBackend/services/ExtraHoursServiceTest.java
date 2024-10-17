@@ -192,12 +192,13 @@ class ExtraHoursServiceTest {
         ExtraHoursEntity expectedExtraHours = new ExtraHoursEntity();
         expectedExtraHours.setRut(rut);
         expectedExtraHours.setDate(Date.valueOf("2024-10-01"));
+        expectedExtraHours.setId(1L);
 
-        when(extraHoursRepository.findByRutAndYearAndMonth(rut, year, month))
+        when(extraHoursRepository.findByRutAndYearAndMonth(expectedExtraHours.getId(), rut, year, month))
                 .thenReturn(expectedExtraHours);
 
         // When
-        ExtraHoursEntity result = extraHoursService.getByRutAndYearAndMonth(rut, year, month);
+        ExtraHoursEntity result = extraHoursService.getByRutAndYearAndMonth(expectedExtraHours.getId(), rut, year, month);
 
         // Then
         assertThat(result).isNotNull();

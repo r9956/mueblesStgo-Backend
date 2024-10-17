@@ -58,8 +58,8 @@ public class ExtraHoursService {
         return extraHoursRepository.findAllByYearAndMonth(year, month);
     }
 
-    public ExtraHoursEntity getByRutAndYearAndMonth(String rut, int year, int month) {
-        return extraHoursRepository.findByRutAndYearAndMonth(rut, year, month);
+    public ExtraHoursEntity getByRutAndYearAndMonth(long id, String rut, int year, int month) {
+        return extraHoursRepository.findByRutAndYearAndMonth(id, rut, year, month);
     }
 
     public void updateAuthorization(ExtraHoursEntity extraHours, boolean authorized) {
