@@ -31,7 +31,7 @@ pipeline {
         stage('Push image to Docker Hub') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'dhpswid', variable: 'dhpsw')]) {
+                    withCredentials([string(credentialsId: 'dhpswid', variable: 'dhpswid')]) {
                         bat 'docker login -u r9956 -p %dhpsw%'
                     }
                     bat 'docker push r9956/payroll-backend:latest'
